@@ -2,12 +2,16 @@ require File.join(File.dirname(__FILE__), 'exploits', 'list')
 
 class LW4W
 
-@exploits = Regexp.new(EXPLOIT_LIST.join("|"))
-@a40x = []
-@a20x = []
-@a50x = []
-@other = []
-@badIP = []
+attr_accessor :exploits, :a40x, :a20x, :a50x, :other, :badIP
+
+def initialize
+   @exploits = Regexp.new(EXPLOIT_LIST.join("|"))
+   @a40x = []
+   @a20x = []
+   @a50x = []
+   @other = []
+   @badIP = []
+end
 
 LOG_LOCATION = 'W3SVC1/u_ex120827.log'
 
@@ -34,8 +38,7 @@ def scanLog logfile = LOG_LOCATION
       @a20x.push(line) if hack20x?(line)
       @a50x.push(line) if hack50x?(line)
       @other.push(line) if exploited?(line) && !hack20x?(line) && !hack50x?(line) && !hack40x?(line)
-      @badIP.push(line.split(/\s/)[8]) if exploited?(line) && !@badIP.include?(@badIP.push(line.split(/\s/)[8]))
-   
+      @badIP.push(line.split(/\s/)[8]) if exploited?(line) && !@badIP.include?(line.split(/\s/)[8])
    }
 end
 
@@ -68,7 +71,8 @@ def printResults time = Time.new.inspect, hostname = `hostname`
    The following IP's used known hacks against the system:
    "
    @badIP.each{|a| puts "--> " + a}
-   
+   puts "
+   "
    print20x
    print40x
    print50x
@@ -80,4 +84,4 @@ end
 
 LogParse = LW4W.new
 LogParse.scanLog
-#LogParse.printResults
+LogParse.printResults
