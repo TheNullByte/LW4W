@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), 'exploits', 'list')
 
 class LW
 
-@exploits = exploitlist
+@exploit = EXPLOIT_LIST
 @a400 = []
 @a200 = []
 @a500 = []
@@ -11,11 +11,11 @@ class LW
 
 
 
-@LOG_LOCATION = 'W3SVC1/u_ex120827.log'
+LOG_LOCATION = 'W3SVC1/u_ex120827.log'
 
 
 @myFile = File.open(LOG_LOCATION)
-@exploits = Regexp.new(exploits.join("|"))
+@exploits = Regexp.new(@exploit.join("|"))
 @myFile.each {|line|
 @a400.push(line) if line =~ exploits && line =~ /\s40\d\s/
 @a200.push(line) if line =~ exploits && line =~ /\s200\s/
