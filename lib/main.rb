@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), 'exploits', 'list')
+require 'net/smtp'
 
 class LW4W
 
@@ -43,21 +44,27 @@ def scanLog logfile = LOG_LOCATION
 end
 
 def print20x
-   puts "HTTP Response code 20x"
-   puts "----------------------"
-   @a20x.each{|a| a = a.split(/\s/); puts "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9]}
+   x = ''
+   x += "HTTP Response code 20x\n"
+   x += "----------------------\n"
+   @a20x.each{|a| a = a.split(/\s/); x += "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9] + "\n"}
+   return x
 end
 
 def print40x
-   puts "HTTP Response code 40x"
-   puts "----------------------"
-   @a40x.each{|a| a = a.split(/\s/); puts "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9]}
+   x = ''
+   x += "HTTP Response code 40x\n"
+   x += "----------------------\n"
+   @a40x.each{|a| a = a.split(/\s/); x += "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9] + "\n"}
+   return x
 end
 
 def print50x
-   puts "HTTP Response code 50x"
-   puts "----------------------"
-   @a50x.each{|a| a = a.split(/\s/); puts "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9]}
+   x = ''
+   x += "HTTP Response code 50x\n"
+   x += "----------------------\n"
+   @a50x.each{|a| a = a.split(/\s/); x += "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9] + "\n"}
+   return x
 end
 
 def printResults time = Time.new.inspect, hostname = `hostname`
@@ -73,10 +80,34 @@ def printResults time = Time.new.inspect, hostname = `hostname`
    @badIP.each{|a| puts "--> " + a}
    puts "
    "
-   print20x
-   print40x
-   print50x
+   puts print20x
+   puts print40x
+   puts print50x
 
+end
+
+def emailResults time = Time.new.inspect, hostname = `hostname`
+   x = ''
+   @badIP.each{|a| x+= "\t-->" + a + "\n"}
+   ipList = x
+   message = <<EOF
+   <----------             LW4W 0.0.1 (09/01/2012)             ---------->
+               Date Initialized: #{time}    
+               Date Analyzed:    Yesterday
+               LogFiles for:     #{hostname}
+               
+      ####################    IIS Start     ########################
+   
+   The following IP's used known hacks against the system:
+   
+   #{ipList}
+   
+   #{print20x}
+   #{print40x}
+   #{print50x}
+   
+EOF
+return message
 end
 
 
@@ -84,4 +115,4 @@ end
 
 LogParse = LW4W.new
 LogParse.scanLog
-LogParse.printResults
+puts LogParse.emailResults
