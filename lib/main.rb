@@ -107,7 +107,11 @@ def emailResults time = Time.new.inspect, hostname = `hostname`
    #{print50x}
    
 EOF
-return message
+
+Net::SMTP.start('localhost') do |smtp|
+   smtp.send_message message, "a.harvey@ocxsystems.com", "a.harvey@ocxsystems.com"   
+end
+
 end
 
 
@@ -115,4 +119,4 @@ end
 
 LogParse = LW4W.new
 LogParse.scanLog
-puts LogParse.emailResults
+LogParse.emailResults
