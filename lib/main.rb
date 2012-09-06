@@ -1,51 +1,8 @@
+require File.join(File.dirname(__FILE__), 'exploits', 'list')
+
 class LW
 
-@exploits = [
-   '^null$',
-   '/\.\./\.\./\.\./',
-   '\.\./\.\./config\.sys',
-   '/\.\./\.\./\.\./autoexec\.bat',
-   '/\.\./\.\./windows/user\.dat',
-   '\\\x02\\\xb1',
-   '\\\x04\\\x01',
-   '\\\x05\\\x01',
-   '\\\x90\\\x02\\\xb1\\\x02\\\xb1',
-   '\\\x90\\\x90\\\x90\\\x90',
-   '\\\xff\\\xff\\\xff\\\xff',
-   '\\\xe1\\\xcd\\\x80',
-   '\\\xff\xe0\\\xe8\\\xf8\\\xff\\\xff\\\xff-m',
-   '\\\xc7f\\\x0c',
-   '\\\x84o\\\x01',
-   '\\\x81',
-   '\\\xff\\\xe0\\\xe8',
-   '\/c\+dir',
-   '\/c\+dir\+c',
-   '\.htpasswd',
-   'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-   'author\.exe',
-   'boot\.ini',
-   'cmd\.exe',
-   'c%20dir%20c',
-   'default\.ida',
-   'fp30reg\.dll',
-   'httpodbc\.dll',
-   'nsiislog\.dll',
-   'passwd$',
-   'root\.exe',
-   'shtml\.exe',
-   'win\.ini',
-   'xxxxxxxxxxxxxxxxxxxxxx',
-   'select',
-   'union',
-   'drop',
-   '--',
-   '`.*`',
-   'script',
-   '\.exe',
-   '=http:\/\/',
-   '=file:\/\/',
-   '\.ini'
-]
+@exploits = exploitlist
 @a400 = []
 @a200 = []
 @a500 = []
@@ -53,7 +10,6 @@ class LW
 @badIP = []
 
 
-def
 
 @LOG_LOCATION = 'W3SVC1/u_ex120827.log'
 
