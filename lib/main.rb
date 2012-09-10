@@ -1,3 +1,5 @@
+##Logwatch for Windows version 0.0.2
+
 require File.join(File.dirname(__FILE__), 'exploits', 'list')
 require 'net/smtp'
 
@@ -12,9 +14,13 @@ def initialize
    @a50x = []
    @other = []
    @badIP = []
+   @time = Time.new
 end
 
-LOG_LOCATION = 'W3SVC1/u_ex120827.log'
+
+
+logconcat = "u_ex" + time.strftime("%y%m%d")
+LOG_LOCATION = 'W3SVC1/#{logconcat}.log'
 
 def hack20x? line
    return line =~ @exploits && line =~ /\s200\s/
@@ -68,7 +74,7 @@ def print50x
 end
 
 def printResults time = Time.new.inspect, hostname = `hostname`
-   puts "<----------             LW4W 0.0.1 (09/01/2012)             ---------->
+   puts "<----------             LW4W 0.0.2 (09/07/2012)             ---------->
                Date Initialized: #{time}    
                Date Analyzed:    Yesterday
                LogFiles for:     #{hostname}
@@ -91,32 +97,36 @@ def emailResults time = Time.new.inspect, hostname = `hostname`
    @badIP.each{|a| x+= "\t-->" + a + "\n"}
    ipList = x
    message = <<EOF
-   <----------             LW4W 0.0.1 (09/01/2012)             ---------->
-               Date Initialized: #{time}    
-               Date Analyzed:    Yesterday
-               LogFiles for:     #{hostname}
-               
-      ####################    IIS Start     ########################
-   
-   The following IP's used known hacks against the system:
-   
-   #{ipList}
-   
-   #{print20x}
-   #{print40x}
-   #{print50x}
+From: IIS SERVER <cehdtech@gmu.edu>
+To: You <a.harvey@ocxsystems.com>
+Subject: IIS Logs
+
+<----------             LW4W 0.0.2 (09/07/2012)             ---------->
+            Date Initialized: #{time}    
+            Date Analyzed:    Yesterday
+            LogFiles for:     #{hostname}
+            
+   ####################    IIS Start     ########################
+
+The following IP's used known hacks against the system:
+
+#{ipList}
+
+#{print20x}
+#{print40x}
+#{print50x}
    
 EOF
 
 Net::SMTP.start('localhost') do |smtp|
    smtp.send_message message, "a.harvey@ocxsystems.com", "a.harvey@ocxsystems.com"   
 end
-
+puts "Email Successful"
 end
 
 
 end
 
-LogParse = LW4W.new
+LogParse = LW4W.new  
 LogParse.scanLog
 LogParse.emailResults
