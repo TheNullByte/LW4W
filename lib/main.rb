@@ -2,10 +2,12 @@
 
 require File.join(File.dirname(__FILE__), 'exploits', 'list')
 require 'net/smtp'
+require 'time'
 
 class LW4W
 
 attr_accessor :exploits, :a40x, :a20x, :a50x, :other, :badIP
+
 
 def initialize
    @exploits = Regexp.new(EXPLOIT_LIST.join("|"))
@@ -14,13 +16,12 @@ def initialize
    @a50x = []
    @other = []
    @badIP = []
-   @time = Time.new
 end
 
 
 
-logconcat = "u_ex" + time.strftime("%y%m%d")
-LOG_LOCATION = 'W3SVC1/#{logconcat}.log'
+logconcat = "u_ex" + (Time.now - 86400).strftime("%y%m%d")
+LOG_LOCATION = "W3SVC1/#{logconcat}.log"
 
 def hack20x? line
    return line =~ @exploits && line =~ /\s200\s/
@@ -61,7 +62,10 @@ def print40x
    x = ''
    x += "HTTP Response code 40x\n"
    x += "----------------------\n"
-   @a40x.each{|a| a = a.split(/\s/); x += "    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9] + "\n"}
+   @a40x.each do |a|
+      a = a.split(/\s/)
+      x += ("    " + a[1] + " || " + a[3] + " || " + a[4] + " || " + a[8] + " || " + a[9] + "\n")
+      end      
    return x
 end
 
@@ -129,4 +133,4 @@ end
 
 LogParse = LW4W.new  
 LogParse.scanLog
-LogParse.emailResults
+LogParse.printResults
